@@ -39,13 +39,13 @@
 			factory.index = function(callback){
 				$http.get('/friends').success(function(output){
 					friends = output;
+					console.log(friends);
 					callback(friends);
 				})
 			}
 
 			factory.addFriend = function(info){
 				$http.post('/friends', info).success(function(data){
-
 				});
 			};
 
@@ -57,10 +57,8 @@
 				}
 			}
 
-			factory.editFriend = function(friend){
-				console.log(friend);
+			factory.editFriend = function(friend, callback){
 				$http.put('/friends/'+ friend._id, friend).success(function(data){
-					
 				})
 			}
 
@@ -99,7 +97,7 @@
 			}
 		})
 
-		myApp.controller('editFriendsController', function(friendFactory, $routeParams,$location){
+		myApp.controller('editFriendsController', function(friendFactory, $routeParams, $location){
 			var self = this;
 			this.friend = {};
 
@@ -113,18 +111,6 @@
 				$location.url('/friends');
 			}
 		})
-		// myApp.controller('editFriendsController', function(friendFactory, $location){
-		// 	var self = this;
-		// 	var friend = {}
-
-		// 	this.editfriend = function(){
-		// 		friendFactory.editfriend(function(data){
-		// 			this.friend = data
-		// 		})
-
-		// 		}
-		// 	}
-		// })
 
 	</script>
 </head>
