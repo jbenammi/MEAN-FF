@@ -1,0 +1,12 @@
+<div class="section row" ng-controller='newFriendsController as newCon'>
+	<div class="col s6 offset-s3">
+		<h3 class="center">Add a Friend</h3>
+		<form name="friendForm">
+			<label>Name</label> <span class="red-text" ng-show='friendForm.name.$touched && friendForm.name.$invalid'>The name is required and must be at least 4 charachters.</span>
+			<input type="text" ng-model='newCon.newFriend.name' name="name" ng-minlength='4' required />
+			<label>Age</label> <span class="red-text" ng-show='friendForm.age.$touched && friendForm.age.$invalid'>Age is required.</span>
+			<input type="number" ng-model='newCon.newFriend.age' name="age" required />
+			<button class="btn waves-effect waves-light" ng-click='newCon.addFriend()'>Add New Friend</button>
+		</form>
+	</div>
+</div>

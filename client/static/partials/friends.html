@@ -1,0 +1,22 @@
+<div class="section row" ng-controller='friendsController as friendCon'>
+	<div class="col s6 offset-s3">
+	<h3 class="center">Friends</h3>
+		<input type="text" ng-model='filter_name' />
+		<table class="striped">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Age</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat='friend in friendCon.friends | filter: filter_name'>
+					<td>{{friend.name}}</td>
+					<td>{{friend.age}}</td>
+					<td><a href="#/friends/{{friend._id}}/edit"><button class="btn waves-effect waves-light orange">Edit</button></a> <button class="btn waves-effect waves-light red" ng-click='friendCon.delete(friend)'>Delete</button></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

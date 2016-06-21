@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" ng-app='myApp'>
+<head>
+	<meta charset="UTF-8">
+	<meta name="author" content="Jonathan Ben-Ammi">
+	<title>Full Friends</title>
+	<meta name="description" content="This is a MEAN assignment for coding dojo">
+	<link rel="stylesheet" type="text/css" href="./../static/css/materialize.css">
+	<link rel="stylesheet" type="text/css" href="./../static/css/style.css">
+	<script src="./../static/js/jquery-2.2.3.js"></script>
+	<script src="./../static/js/jquery-ui.js"></script>
+	<script src="./../static/js/materialize.js"></script>
+	<script src="./../static/js/angular.js"></script>
+	<script src="./../static/js/angular-route.js"></script>
+	<script src="./../static/js/angular-messages.js"></script>
+	<script type="text/javascript">
+		var myApp = angular.module('myApp', ['ngRoute', 'ngMessages']);
+
+		myApp.config(function($routeProvider){
+			$routeProvider
+				.when('/friends', {
+					templateUrl: 'static/partials/friends.html'
+				})
+				.when('/friends/new', {
+					templateUrl: 'static/partials/newFriend.html'
+				})
+				.when('/friends/:id/edit', {
+					templateUrl: 'static/partials/editfriend.html'
+				})
+				.otherwise({
+					redirectTo: '/friends'
+				});
+		});
+
+		myApp.factory('friendFactory', function($http){
+			var friends = [];
+			var factory = {};
+
+			factory.index = function(callback){
+				$http.get('/friends').success(function(output){
+					friends = output;
+					callback(friends);
+				})
+			}
+
+			factory.addFriend = function(info){
+				$http.post('/friends', info).success(function(data){
+
+				});
+			};
+
+			factory.showFriend = function(id, callback){
+				for (var i = 0; i < friends.length; i++) {
+					if(friends[i]._id == id.id){
+						callback(friends[i]);
+					}
+				}
+			}
+
+			factory.editFriend = function(friend){
+				console.log(friend);
+				$http.put('/friends/'+ friend._id, friend).success(function(data){
+					
+				})
+			}
+
+			factory.delete = function(friend, callback){
+				$http.delete('/friends/' + friend._id).success(function(data){
+					friends.splice(friends.indexOf(friend), 1);
+					callback(friends);
+				})
+			}
+			return factory
+		})
+
+		myApp.controller('friendsController', function(friendFactory){
+			var self = this;
+			this.friends = [];
+
+			friendFactory.index(function(data){
+				self.friends = data;
+			})
+
+			this.delete = function(friend){
+				friendFactory.delete(friend, function(){
+					friendFactory.index(function(data){
+						self.friends = data;
+					});
+				});		
+			}
+		})
+		myApp.controller('newFriendsController', function(friendFactory, $location){
+			var newFriend = {};
+			
+			this.addFriend = function(){
+				friendFactory.addFriend(this.newFriend);
+				this.newFriend = {};
+				$location.url('/friends');
+			}
+		})
+
+		myApp.controller('editFriendsController', function(friendFactory, $routeParams,$location){
+			var self = this;
+			this.friend = {};
+
+			friendFactory.showFriend($routeParams, function(data){
+				self.friend = data;
+			})
+			
+			this.editFriend = function(){
+				friendFactory.editFriend(this.friend);
+				this.friend = {};
+				$location.url('/friends');
+			}
+		})
+		// myApp.controller('editFriendsController', function(friendFactory, $location){
+		// 	var self = this;
+		// 	var friend = {}
+
+		// 	this.editfriend = function(){
+		// 		friendFactory.editfriend(function(data){
+		// 			this.friend = data
+		// 		})
+
+		// 		}
+		// 	}
+		// })
+
+	</script>
+</head>
+<body>
+<nav>
+	<div class="nav-wrapper orange">
+		<a href="#/" class="brand-logo">Full MEAN Friends</a>
+		<ul class="right">
+			<li><a href="#/friends">Show Friends</a></li>
+			<li><a href="#/friends/new">Add New Friend</a></li>
+		</ul>
+	</div>
+</nav>
+	<div ng-view='' class="container">
+		
+	</div>
+</body>
+</html>
